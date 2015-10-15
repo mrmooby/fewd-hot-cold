@@ -2,91 +2,100 @@
 $(document).ready(function()
 {
 
-/* Declare variables */
+  /* Display information modal box */
+  $(".what").click(function(){
+    $(".overlay").fadeIn(1000);
+  });
 
-var userInput;
-var unknownInteger;
+  /* Hide information modal box */
+  $("a.close").click(function(){
+    $(".overlay").fadeOut(1000);
+  });
 
+  /* Initiate the first game */
+  playGame();
 
-/* Play the game */
-
-	randomInteger();
-	UserInput();
+  /* User can reset game at any time */
+  $(".new").click(function(){
+    newGame();
+  });
 
 });
 
 /* Generate a random number between 1 and 100 */
 
-function randomInteger()
-{
+function randomInteger() {
 	unknownInteger = Math.floor(Math.random() * 101);
 	console.log("unknownInteger= " + unknownInteger);
 	return unknownInteger;
 }
 
-/* Capture user input/guesses */
+/* Set conditions for new game */
 
-function UserInput()
+function newGame() {
+    guessCounter = 0; 
+    correctGuess = false; 
+    $('#count').text(guessCounter);
+    $('#feedback').text("Make your Guess!");
+    $(".guessBox").html("");
+    $('form').trigger("reset");
+    randomInteger();
+}
+
+function playGame()
 {
-	var correctGuess = false;
-	var guessCounter = 0;
+  newGame();
 	$('form').submit(function(event){ // examples contain "event" in () for the function, why?  In other words, I need to understand this line better as a whole
-		event.preventDefault(); // remember this method!
+		event.preventDefault(); 
 		if (!correctGuess){
-  			userInput = $('input#userGuess.text').val();
-  			console.log("userInput= " + userInput);
+  		userInput = $('input#userGuess.text').val();
 
-  			// reset input field
+      /* validate the user input */
+      if (isNaN(userInput)){
+        $('#feedback').text("Guess must be a number.");
+      } else if (userInput > 100 || userInput < 1 ) {
+        $('#feedback').text("Guess must be between 1 & 100.");
+      } else if (userInput % 1 != 0) {
+        $('#feedback').text("Guess must be a whole number.");
+      } else {
 
-  			$('form').trigger("reset");
+	     // reset input field
 
-  			// increment guess counter
+	     $('form').trigger("reset");
 
-  			guessCounter++;
-  			console.log("counter=" + guessCounter);
-  			$('#count').text(guessCounter);
-  			
-  			// add guess to guess window 
+	     // increment guess counter
 
-  			$('<li>' + userInput + '</li>').appendTo(".guessBox");
+			guessCounter++;
+			$('#count').text(guessCounter);
+	
+	     // add this guess to previous guesses list 
 
-  			// provide feedback
-  			
-  			var guessDelta = Math.abs(userInput - unknownInteger);
-  			if (guessDelta > 50){
-  				console.log("cold as fuck!");
-  			} else if (guessDelta >=30 && guessDelta <= 50) {
-  				console.log("cold.");
-  			} else if (guessDelta >=20 && guessDelta < 30) {
-  				console.log("warm.");
-  			} else if (guessDelta >=10 && guessDelta < 20) {
-  				console.log("hot.");
-  			} else if (guessDelta >0 && guessDelta < 10){
-  				console.log("Jen Selter's ass!")
-  			} else if (guessDelta == 0) {
-  				console.log("BINGO!");
-  				correctGuess = true; // stop taking input until a new game is initiated.
-  			}	
+	     $('<li>' + userInput + '</li>').appendTo(".guessBox");
 
-  			
-  		}
+	     // provide feedback
+	
+	     var guessDelta = Math.abs(userInput - unknownInteger);
+	     if (guessDelta > 50){
+          $('#feedback').text("Ice cold!");
+	     } else if (guessDelta >=30 && guessDelta <= 50) {
+          $('#feedback').text("cold.");
+	     } else if (guessDelta >=20 && guessDelta < 30) {
+          $('#feedback').text("warm");
+	     } else if (guessDelta >=10 && guessDelta < 20) {
+          $('#feedback').text("hot");
+	     } else if (guessDelta >0 && guessDelta < 10){
+          $('#feedback').text("Sizzling hot!");
+	     } else if (guessDelta == 0) {
+          $('#feedback').text("You got it!  Click +NEW GAME to play again.");
+		      correctGuess = true; // stop taking input until a new game is initiated.
+	     }	
+      }		
+  	} 
 	});
+
 }
 
 
-/* ORIGINAL CODE BUNDLED WITH FORK - ADD BACK IN AFTER GETTING CORE PROGRAM FUNCTIONAL */
 
-	/*--- Display information modal box ---
-  	$(".what").click(function(){
-    	$(".overlay").fadeIn(1000);
 
-  	});
 
-  	/*--- Hide information modal box ---
-  	$("a.close").click(function(){
-  		$(".overlay").fadeOut(1000);
-  	});
-
-*/
-
-  	/* generate a random number */
